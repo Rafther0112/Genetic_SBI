@@ -1,0 +1,32 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+  cpu-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: install (CPU-only deps)
+        run: pip install numpy scipy pytest emcee
+      - name: unit tests
+        run: pytest -q tests/
+      - name: cost-table smoke
+        run: python run_cost.py --n_theta 20 --n_theta_fsp 5 --n_theta_cle 5 --ssa_theta 3 --ssa_cells 20
+      - name: reference-posterior smoke
+        run: python run_reference.py --n_test 4 --n_cells 100 --n_ref 2 --n_samples 100 --workers 2
+
+  sbi-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: install sbi (pulls CPU torch)
+        run: pip install sbi
+      - name: 200-simulation pipeline smoke
+        run: python run_experiment.py --n_sims 200 --n_cells 100 --n_test 50
