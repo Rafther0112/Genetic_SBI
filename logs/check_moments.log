@@ -1,0 +1,12 @@
+=== telegraph check (Eq. 4 vs the closed form of Section 3) ===
+  max relative difference in Fano over 2000 prior draws: 2.32e-14
+
+=== three-state check (Eq. 4 vs FSP, M=600) ===
+  max relative difference (mean or Fano): 9.06e-13
+  at theta = (11.7542, 0.1526, 11.2026, 0.1186, 121.2359)
+  max FSP truncation tail mass: 3.04e-120   (raise --M if above ~1e-8)
+
+  -> Appendix C: 'agrees with the FSP moments to 9e-13 relative difference
+     over 200 parameter draws from the prior (FSP truncation M = 600)'
+
+  cost of the NB moments for 8,000 parameters: 0.37 s (Table 5)

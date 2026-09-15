@@ -1,0 +1,18 @@
+
+=== wall-clock (extrapolated linearly) ===
+  telegraph    cme            0.07 s for  200 theta  ->  2.9 s per 8000 sims
+  telegraph    lna            0.05 s for  200 theta  ->  2.2 s per 8000 sims
+  telegraph    nb             0.07 s for  200 theta  ->  2.7 s per 8000 sims
+  telegraph    cle           10.06 s for  200 theta  ->  6.7 min per 8000 sims
+  telegraph    hybrid         5.91 s for  200 theta  ->  3.9 min per 8000 sims
+  three-state  exact          1.60 s for  200 theta  ->  64.0 s per 8000 sims
+  three-state  cle           24.84 s for  200 theta  ->  16.6 min per 8000 sims
+  three-state  hybrid        10.37 s for  200 theta  ->  6.9 min per 8000 sims
+  three-state  nb             1.59 s for  200 theta  ->  63.7 s per 8000 sims
+  SIR          ssa            0.92 s for   50 theta  ->  55.3 s per 3000 sims
+  SIR          cle            0.90 s for   50 theta  ->  54.1 s per 3000 sims
+
+=== telegraph prior checks ===
+  fraction of prior with analytic Fano > 2      : 0.56
+  fraction of prior with analytic Fano > 4.3   : 0.36
+  corr(log analytic Fano, log empirical Fano) at 500 cells: 0.929

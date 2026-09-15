@@ -1,0 +1,19 @@
+
+[txburst/data/SS3_c57_UMIs_mESC.csv] 10927 genes x 94 cells
+  duplicated cell names   : 0
+  duplicated cell columns : 0 (identical counts across all genes)
+  genes with mean UMI > 0.05: 9262
+  first cell ids: ['SS3_mESC_p1_A1_S1', 'SS3_mESC_p1_E1_S5', 'SS3_mESC_p1_C3_S19', 'SS3_mESC_p1_F2_S14']
+
+[txburst/data/SS3_cast_UMIs_mESC.csv] 10927 genes x 188 cells
+  duplicated cell names   : 0
+  duplicated cell columns : 94 (identical counts across all genes)
+  genes with mean UMI > 0.05: 9035
+  first cell ids: ['SS3_mESC_p1_A1_S1', 'SS3_mESC_p1_E1_S5', 'SS3_mESC_p1_C3_S19', 'SS3_mESC_p1_F2_S14']
+
+[cells] shared ids: 94 | only first: 0 | only second: 94
+If the alleles come from the same cells, the shared count should equal both totals.
+txburst/data/SS3_c57_UMIs_mESC.npz
+    counts (10927, 94) int64
+txburst/data/SS3_cast_UMIs_mESC.npz
+    counts (10927, 188) int64

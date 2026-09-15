@@ -96,10 +96,17 @@ def main():
         disc[g] = mmd_rbf(se, sc)                    # posterior disagreement
         disc[g] = max(disc[g], 0.0)
 
+    # W4: capture compresses the Fano toward 1; de-bias with the known p to recover
+    # the true burstiness scale before correlating (capture.fano_debias).
+    fano_debiased = C.fano_debias(fano, args.capture)
+
     # does the Fano predict the disagreement?
     from scipy.stats import spearmanr
     rho, pval = spearmanr(fano, disc)
-    print(f"\nSpearman corr(observed Fano, exact-vs-surrogate disagreement) = {rho:.3f} (p={pval:.1e})")
+    rho_db, pval_db = spearmanr(fano_debiased, disc)
+    print(f"\nSpearman corr(observed  Fano, disagreement) = {rho:.3f} (p={pval:.1e})")
+    print(f"Spearman corr(de-biased Fano, disagreement) = {rho_db:.3f} (p={pval_db:.1e})  "
+          f"[capture-corrected, p={args.capture}]")
     hi = disc > np.median(disc)
     print(f"median observed Fano: disagree>median genes = {np.median(fano[hi]):.2f}, "
           f"others = {np.median(fano[~hi]):.2f}")

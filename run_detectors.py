@@ -54,20 +54,32 @@ def main():
     fano = Xte[:, 2]; zero = Xte[:, 3]
     ood = -mvn.logpdf(Xte)                       # high = out-of-distribution
     leaked = np.empty(args.n_test); label = np.empty(args.n_test)
+    ppc = np.empty(args.n_test)                   # posterior-predictive-check discrepancy
+    rng_ppc = np.random.default_rng(7)
+    n_pp = 40                                     # posterior draws for the PPC
     for i in range(args.n_test):
         s = R._flow_sample(post, x_test[i], args.n_post).numpy()
         leaked[i] = np.mean(np.any((s < LOW) | (s > HIGH), axis=1))
         rank = (s[:, 0] < tt[i, 0]).mean()
         label[i] = 1.0 if (rank < 0.05 or rank > 0.95) else 0.0
+        # PPC: draw thetas from the surrogate posterior, simulate from the SURROGATE, and
+        # measure how far the observed summaries fall from the predictive summary cloud.
+        idx = rng_ppc.choice(len(s), n_pp, replace=False)
+        xpp = simulate_batch(np.clip(s[idx], LOW, HIGH), "lna", args.n_cells, rng_ppc)  # (n_pp,6)
+        mu_pp = xpp.mean(0); sd_pp = xpp.std(0) + 1e-6
+        ppc[i] = np.mean(((Xte[i] - mu_pp) / sd_pp) ** 2)   # mean squared z-score
 
     print(f"\nfailure rate (LNA misses true k_on): {label.mean():.2f}  "
           f"({int(label.sum())}/{args.n_test})")
     print("\ndetector AUC (predicting LNA failure per observation):")
-    for name, score in [("empirical Fano", fano), ("zero fraction", zero),
-                        ("leaked mass", leaked), ("OOD density (baseline)", ood)]:
+    for name, score in [("empirical Fano (pre-inf)", fano), ("zero fraction (pre-inf)", zero),
+                        ("leaked mass (post-inf)", leaked),
+                        ("OOD density (baseline)", ood),
+                        ("posterior-pred check (baseline)", ppc)]:
         auc = roc_auc_score(label, score)
-        print(f"  {name:24s} AUC = {auc:.3f}")
-    print("\nC3 holds if Fano (and/or leaked mass) matches or beats the OOD baseline.")
+        print(f"  {name:34s} AUC = {auc:.3f}")
+    print("\nC3 holds if Fano (and/or leaked mass) matches or beats BOTH baselines")
+    print("(OOD density and the posterior-predictive check).")
 
 
 if __name__ == "__main__":

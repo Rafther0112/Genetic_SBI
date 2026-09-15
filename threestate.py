@@ -177,3 +177,22 @@ def sample_hybrid_3state_batched(k01, k10, k12, k21, k_syn, rng, t_max=25.0, dt=
         m = np.clip(m + (a_syn - a_deg) * dt
                     + np.sqrt(a_syn) * nm[0] - np.sqrt(a_deg) * nm[1], 0, None)
     return np.round(m).astype(int)
+
+
+def fsp_mean_fano(theta, M=None):
+    """Exact mean and Fano of the 3-state model via FSP (no closed form for Fano)."""
+    mv, pmf = fsp_stationary_pmf(theta, M=M)
+    mean = float((mv * pmf).sum())
+    var = float(((mv ** 2) * pmf).sum() - mean ** 2)
+    return mean, (var / mean if mean > 0 else 1.0)
+
+
+def sample_nb_3state(theta, n_cells, rng, M=None):
+    """Count-appropriate surrogate: NB matched to the EXACT (FSP) mean and Fano of the
+    3-state model. The analog of the telegraph NB control, to test whether the
+    count-shape mechanism transfers to the second system."""
+    mean, fano = fsp_mean_fano(theta, M=M)
+    fano = max(fano, 1.0 + 1e-6)
+    r = max(mean / (fano - 1.0), 1e-6)
+    p = 1.0 / fano
+    return rng.negative_binomial(r, p, size=n_cells).astype(int)

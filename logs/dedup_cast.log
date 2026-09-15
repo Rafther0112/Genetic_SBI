@@ -1,0 +1,34 @@
+/media/SSD2/rvelazquez/Genetic_SBI/dedup_cast.py:80: RuntimeWarning: invalid value encountered in cast
+  np.savez(base + a.suffix + ".npz", counts=out.values.astype(np.int64))
+[in] C57  10927 genes x 94 cells
+[in] CAST 10927 genes x 188 cells
+
+[cast] 94 distinct column contents among 188 columns; 94 contents appear more than once
+[cast] names shared with C57: 94; names only in CAST: 94
+
+  first five duplicate pairs (name in C57  <->  extra CAST name):
+    SS3_mESC_p1_A1_S1            <-> SS3_mESC_p2_A1_S1
+    SS3_mESC_p1_E1_S5            <-> SS3_mESC_p2_E1_S5
+    SS3_mESC_p1_C3_S19           <-> SS3_mESC_p2_C3_S19
+    SS3_mESC_p1_F2_S14           <-> SS3_mESC_p2_F2_S14
+    SS3_mESC_p1_A3_S17           <-> SS3_mESC_p2_A3_S17
+  duplicate groups pairing a shared name with an extra name: 94
+  -> every extra CAST column is a copy of a cell that C57 also has:
+     the effective sample is 94 cells in BOTH alleles.
+
+[out] corrected CAST: 10927 genes x 94 cells, column order matched to C57
+      duplicated columns remaining: 0
+[written] txburst/data/SS3_cast_UMIs_mESC_dedup.csv and .npz
+
+[sanity] summaries are invariant under exact duplication, so these should match:
+  CAST 188 cols  mean Fano 2.3115   mean zero fraction 0.6563
+  CAST 94 cols   mean Fano 2.3115   mean zero fraction 0.6563
+  (identical values confirm the duplication is exact; what changes is n_cells,
+   which is what the estimator is conditioned on.)
+
+[gene filter] genes passing two common filters, per allele:
+  C57 (94)     mean UMI > 0.05:  9262 | >0 in >=10 cells (absolute):  7864 | >0 in >=10% of cells:  7864
+  CAST (188)   mean UMI > 0.05:  9035 | >0 in >=10 cells (absolute):  8724 | >0 in >=10% of cells:  7637
+  CAST (94)    mean UMI > 0.05:  9035 | >0 in >=10 cells (absolute):  7637 | >0 in >=10% of cells:  7637
+  If your paper's gene counts (6,430 C57 vs 7,637 CAST) came from an ABSOLUTE
+  cell-count filter, duplication is why CAST kept more genes.

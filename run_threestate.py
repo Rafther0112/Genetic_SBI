@@ -39,7 +39,7 @@ os.makedirs(CACHE, exist_ok=True)
 # log10 prior over (k01, k10, k12, k21, k_syn)
 LOW = torch.tensor([-2.0, -1.0, -2.0, -1.0, 0.0])
 HIGH = torch.tensor([1.3, 1.3, 1.3, 1.3, 2.3])
-SIMS = ["exact", "cle", "hybrid"]
+SIMS = ["exact", "cle", "hybrid", "nb"]
 N_BINS = 6
 PARAM = 4          # report coverage for k_syn
 
@@ -57,6 +57,11 @@ def simulate(theta_log, sim, n_cells, rng):
             mv, pmf = TS.fsp_stationary_pmf(rates[i])
             pmf = np.clip(pmf, 0, None); pmf /= pmf.sum()
             X[i] = summary_stats(rng.choice(mv, size=n_cells, p=pmf))
+        return X
+    if sim == "nb":
+        X = np.empty((N, 6), np.float32)
+        for i in range(N):
+            X[i] = summary_stats(TS.sample_nb_3state(rates[i], n_cells, rng))
         return X
     cols = [np.repeat(rates[:, j], n_cells) for j in range(5)]
     fn = TS.sample_cle_3state_batched if sim == "cle" else TS.sample_hybrid_3state_batched
@@ -122,7 +127,28 @@ def main():
         print(f"{b}     " + "".join(f"{cov[s][sel].mean():>9.2f}" for s in SIMS))
     print("all   " + "".join(f"{cov[s].mean():>9.2f}" for s in SIMS))
     print("\nExpected: exact calibrated, CLE fails (diffuses 3 discrete states),")
-    print("hybrid tracks exact. Same ordering as the telegraph, no closed form used.")
+    print("hybrid tracks exact; NB (count family) transfers the count-shape mechanism.")
+
+    # W3: coverage-vs-Fano figure for the second system
+    import matplotlib; matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+    centers = np.sqrt(edges[:-1] * np.clip(edges[1:], 1e-6, None))
+    col = {"exact": "#0f6e56", "cle": "#ba7517", "hybrid": "#2b6cb0", "nb": "#7e4ea8"}
+    lab = {"exact": "exact (FSP, control)", "cle": "CLE (diffuses 3 states)",
+           "hybrid": "hybrid (discrete promoter)", "nb": "NB (count surrogate)"}
+    mk = {"exact": "o", "cle": "s", "hybrid": "^", "nb": "D"}
+    plt.figure(figsize=(5, 3.6))
+    for s in SIMS:
+        y = [cov[s][bin_idx == b].mean() for b in range(N_BINS)]
+        plt.plot(centers, y, mk[s] + "-", color=col[s], label=lab[s], lw=1.5)
+    plt.axhline(0.9, ls=":", color="gray", label="nominal 90%")
+    plt.xscale("log"); plt.ylim(0, 1)
+    plt.xlabel("empirical Fano factor of snapshot")
+    plt.ylabel("$k_{syn}$ 90% CI coverage")
+    plt.title("Three-state refractory promoter (no closed form)")
+    plt.legend(fontsize=7); plt.tight_layout()
+    plt.savefig("threestate_coverage.png", dpi=130, bbox_inches="tight")
+    print("[plot] saved threestate_coverage.png")
 
 
 if __name__ == "__main__":
