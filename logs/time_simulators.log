@@ -3,16 +3,20 @@
   telegraph    cme            0.07 s for  200 theta  ->  2.9 s per 8000 sims
   telegraph    lna            0.05 s for  200 theta  ->  2.2 s per 8000 sims
   telegraph    nb             0.07 s for  200 theta  ->  2.7 s per 8000 sims
-  telegraph    cle           10.06 s for  200 theta  ->  6.7 min per 8000 sims
-  telegraph    hybrid         5.91 s for  200 theta  ->  3.9 min per 8000 sims
-  three-state  exact          1.60 s for  200 theta  ->  64.0 s per 8000 sims
-  three-state  cle           24.84 s for  200 theta  ->  16.6 min per 8000 sims
-  three-state  hybrid        10.37 s for  200 theta  ->  6.9 min per 8000 sims
-  three-state  nb             1.59 s for  200 theta  ->  63.7 s per 8000 sims
-  SIR          ssa            0.92 s for   50 theta  ->  55.3 s per 3000 sims
-  SIR          cle            0.90 s for   50 theta  ->  54.1 s per 3000 sims
+  telegraph    cle           10.13 s for  200 theta  ->  6.8 min per 8000 sims
+  telegraph    hybrid         5.86 s for  200 theta  ->  3.9 min per 8000 sims
+  three-state  exact          1.61 s for  200 theta  ->  64.4 s per 8000 sims
+  three-state  cle           24.72 s for  200 theta  ->  16.5 min per 8000 sims
+  three-state  hybrid        10.55 s for  200 theta  ->  7.0 min per 8000 sims
+  three-state  nb             1.64 s for  200 theta  ->  65.5 s per 8000 sims
+  telegraph    FSP            0.40 s for  100 theta  ->  32.2 s per 8000 sims
+  telegraph    SSA        per-theta over 32 draws, 100 cells, scaled to 500 cells x 8000 sims:
+               median 18.2 min   IQR 4.2-62.0 min   5-95% 0.55-87.0 min   mean 33.1 min
+               corr(log k_syn*p_on, log time) = 0.98  (cost spans 622x across the prior)
+  SIR          ssa            1.04 s for   50 theta  ->  62.4 s per 3000 sims
+  SIR          cle            0.95 s for   50 theta  ->  57.0 s per 3000 sims
 
 === telegraph prior checks ===
   fraction of prior with analytic Fano > 2      : 0.56
-  fraction of prior with analytic Fano > 4.3   : 0.36
-  corr(log analytic Fano, log empirical Fano) at 500 cells: 0.929
+  fraction of prior with analytic Fano > 4.3   : 0.35
+  corr(log analytic Fano, log empirical Fano) at 500 cells: 0.927

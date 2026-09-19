@@ -35,6 +35,10 @@ def main():
     ap.add_argument("--n_theta", type=int, default=200)
     ap.add_argument("--n_cells", type=int, default=500)
     ap.add_argument("--n_real", type=int, default=200)
+    ap.add_argument("--n_fsp", type=int, default=100)
+    ap.add_argument("--n_ssa", type=int, default=32,
+                    help="SSA cost varies by orders of magnitude across the prior; "
+                         "this many parameters are timed individually")
     ap.add_argument("--n_train_sir", type=int, default=3000)
     ap.add_argument("--fano_star", type=float, default=4.3)
     a = ap.parse_args()
@@ -60,6 +64,42 @@ def main():
                    a.n_theta, 8000)
     except Exception as e:
         print(f"  three-state: skipped ({e})")
+    try:
+        import fsp
+        fn = None
+        for name in ("sample_fsp_batched", "sample_fsp", "fsp_sample", "sample"):
+            fn = getattr(fsp, name, None)
+            if fn is not None:
+                break
+        if fn is None:
+            print(f"  telegraph FSP: skipped (no sampler found in fsp.py; it has {[x for x in dir(fsp) if not x.startswith('_')]})")
+        else:
+            nf = a.n_fsp
+            report("telegraph", "FSP", timed(lambda: [fn(t, a.n_cells, np.random.default_rng(0)) for t in theta_to_rates(th[:nf])]),
+                   nf, 8000)
+    except Exception as e:
+        print(f"  telegraph FSP: skipped ({e})")
+    try:
+        from telegraph import sample_gillespie
+        # SSA cost is roughly proportional to the number of reaction events per cell,
+        # about k_syn * p_on * t_max, which spans decades over a log-uniform prior. A mean
+        # over a handful of parameters is dominated by its largest draw, so we time each
+        # parameter separately and report the median and the range.
+        nc = min(a.n_cells, 100)
+        rates = theta_to_rates(th[:a.n_ssa])
+        per = np.array([timed(sample_gillespie, t, nc, np.random.default_rng(0)) for t in rates])
+        per8k = per * (a.n_cells / nc) * 8000          # seconds per 8,000-simulation set
+        load = rates[:, 2] * rates[:, 0] / (rates[:, 0] + rates[:, 1])   # k_syn * p_on
+        r = np.corrcoef(np.log(load), np.log(per))[0, 1]
+        q = np.percentile(per8k, [50, 25, 75, 5, 95])
+        print(f"  {'telegraph':12s} {'SSA':10s} per-theta over {a.n_ssa} draws, {nc} cells, "
+              f"scaled to {a.n_cells} cells x 8000 sims:")
+        print(f"               median {q[0]/60:.1f} min   IQR {q[1]/60:.1f}-{q[2]/60:.1f} min   "
+              f"5-95% {q[3]/60:.2f}-{q[4]/60:.1f} min   mean {per8k.mean()/60:.1f} min")
+        print(f"               corr(log k_syn*p_on, log time) = {r:.2f}  "
+              f"(cost spans {per8k.max()/per8k.min():.0f}x across the prior)")
+    except Exception as e:
+        print(f"  telegraph SSA: skipped ({e})")
     try:
         import run_sir as S
         n_sir = max(10, a.n_theta // 4)

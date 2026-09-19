@@ -1,0 +1,18 @@
+k_off = 1.0, k_syn = 40.0, 20000 cells per point
+
+    k_on   mean: cme      cle   hybrid    zero: cme      cle   hybrid   analytic zero
+   0.025        0.97     5.72     1.03        0.900    0.045    0.898           0.899
+   0.056        2.13     7.41     2.20        0.788    0.019    0.790           0.789
+   0.100        3.66     9.07     3.72        0.656    0.007    0.658           0.658
+   0.300        9.15    13.43     9.39        0.299    0.001    0.299           0.297
+   1.000       19.89    19.93    19.95        0.024    0.000    0.026           0.025
+   3.000       29.96    26.13    29.85        0.000    0.000    0.000           0.000
+  20.000       38.08    33.17    37.72        0.000    0.000    0.000           0.000
+           mean deficit of cle at k_on=20.0: -12.9% (analytic exact mean 38.10)
+           mean deficit of hybrid at k_on=20.0: -1.0% (analytic exact mean 38.10)
+
+[plot] premise_validation.png/.pdf  (40 k_on points, shaded = bursty regime)
+[grid] k_on from 0.025 to 20, log-spaced, k_off=1.0, k_syn=40.0
+
+Sections 4.1 and 4.3 quote the bursty-end values and the fast-switching mean
+deficit from this table. Paste it to Claude.
