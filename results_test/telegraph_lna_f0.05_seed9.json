@@ -1,0 +1,31 @@
+{
+ "system": "telegraph",
+ "surrogate": "lna",
+ "target": "k_on",
+ "seed": 9,
+ "test_seed": 1009,
+ "f": 0.05,
+ "k_exact": 20,
+ "n_total": 400,
+ "exact_only": {
+  "coverage": 0.62,
+  "dist_nominal": 0.28,
+  "signed_bias": -0.21514729710968866,
+  "abs_bias": 0.3708865960798138,
+  "post_std": 0.5585839748382568,
+  "ci90_width": 1.431325936965644,
+  "leaked_mass": 0.29818
+ },
+ "mixture": {
+  "coverage": 0.76,
+  "dist_nominal": 0.14,
+  "signed_bias": -0.49160778055640597,
+  "abs_bias": 0.5674786445308971,
+  "post_std": 0.5325177907943726,
+  "ci90_width": 1.7289826598018407,
+  "leaked_mass": 0.35111999999999993
+ },
+ "git_commit": "a6ed4ce",
+ "mock": false,
+ "time": "2026-09-25 20:09:56"
+}

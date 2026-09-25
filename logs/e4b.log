@@ -1,0 +1,32 @@
+Traceback (most recent call last):
+  File "/media/SSD2/rvelazquez/Genetic_SBI/run_localization.py", line 101, in <module>
+    import os; os.makedirs("results", exist_ok=True); main()
+  File "/media/SSD2/rvelazquez/Genetic_SBI/run_localization.py", line 62, in main
+    prior = E.prior_of(a.system)
+  File "/media/SSD2/rvelazquez/Genetic_SBI/exp_common.py", line 45, in prior_of
+    return make_prior() if system == "telegraph" else TS3.make_prior3()
+AttributeError: module 'threestate' has no attribute 'make_prior3'
+Traceback (most recent call last):
+  File "/media/SSD2/rvelazquez/Genetic_SBI/run_localization.py", line 101, in <module>
+    import os; os.makedirs("results", exist_ok=True); main()
+  File "/media/SSD2/rvelazquez/Genetic_SBI/run_localization.py", line 62, in main
+    prior = E.prior_of(a.system)
+  File "/media/SSD2/rvelazquez/Genetic_SBI/exp_common.py", line 45, in prior_of
+    return make_prior() if system == "telegraph" else TS3.make_prior3()
+AttributeError: module 'threestate' has no attribute 'make_prior3'
+Traceback (most recent call last):
+  File "/media/SSD2/rvelazquez/Genetic_SBI/run_localization.py", line 101, in <module>
+    import os; os.makedirs("results", exist_ok=True); main()
+  File "/media/SSD2/rvelazquez/Genetic_SBI/run_localization.py", line 62, in main
+    prior = E.prior_of(a.system)
+  File "/media/SSD2/rvelazquez/Genetic_SBI/exp_common.py", line 45, in prior_of
+    return make_prior() if system == "telegraph" else TS3.make_prior3()
+AttributeError: module 'threestate' has no attribute 'make_prior3'
+Traceback (most recent call last):
+  File "/media/SSD2/rvelazquez/Genetic_SBI/run_localization.py", line 101, in <module>
+    import os; os.makedirs("results", exist_ok=True); main()
+  File "/media/SSD2/rvelazquez/Genetic_SBI/run_localization.py", line 62, in main
+    prior = E.prior_of(a.system)
+  File "/media/SSD2/rvelazquez/Genetic_SBI/exp_common.py", line 45, in prior_of
+    return make_prior() if system == "telegraph" else TS3.make_prior3()
+AttributeError: module 'threestate' has no attribute 'make_prior3'
